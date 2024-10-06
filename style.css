@@ -46,31 +46,56 @@ button {
 .div-table {
     display: none;
 }
-.numero-div {
-    width: 100px;
-    height: 100px;
-    background-color: #007bff;
-    color: white;
-    font-size: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    margin-bottom: 20px;
-}
 
 .timeline {
     white-space: nowrap;
+    max-width: 1400px;
     overflow-x: hidden;
-    background-color: #456990;
     display:none;
+    padding: 0 10px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 320px auto;
+    grid-gap: 20px;
 }
+
+.timeline::before,
+.timeline::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 30px;
+  width: 100px;
+  z-index: 2;
+}
+
+.timeline::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--timeline-gradient));
+}
+
+.timeline::before {
+  left: 340px;
+  background: linear-gradient(90deg, var(--timeline-gradient));
+} 
+
 
 .timeline ol {
     font-size: 0;
     width: 100vw;
     padding: 120px 0;
     transition: all 1s;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+.timeline ol::-webkit-scrollbar {
+  height: 12px;
+}
+
+.timeline ol::-webkit-scrollbar-thumb,
+.timeline ol::-webkit-scrollbar-track {
+  border-radius: 92px;
 }
 
 .timeline ol li {
@@ -80,6 +105,7 @@ button {
     width: 160px;
     height: 3px;
     background: #fff;
+    scroll-snap-align: start;
 }
 
 .timeline ol li:last-child {
@@ -91,7 +117,7 @@ button {
 }
 
 .timeline ol li:not(:last-child)::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: calc(100% + 1px);
@@ -101,6 +127,7 @@ button {
     transform: translateY(-50%);
     border-radius: 50%;
     background: #F45B69;
+    z-index: 1;
 }
 
 .timeline ol li div {
@@ -115,7 +142,7 @@ button {
 }
 
 .timeline ol li div::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 100%;
     left: 0;
