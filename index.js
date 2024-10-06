@@ -47,6 +47,7 @@ function generateNumbers(quantProcessos) {
 document.getElementById('generateBtn').addEventListener('click', function () {
   container.innerHTML = '';
   document.getElementById('submitProcesses').style.display = 'none';
+  
 
   let quantProcessos = document.getElementById('inputNumber').value;
 
@@ -61,6 +62,7 @@ document.getElementById('generateBtn').addEventListener('click', function () {
 document.getElementById('addManualBtn').addEventListener('click', function() {
   tabelaRR.innerHTML = '';
   document.querySelector('.div-table').style.display = 'none';
+  document.querySelector('.timeline').style.display = 'none';
   let quantProcessos = document.getElementById('inputNumber').value;
   if (quantProcessos > 0) {
       // Adiciona os campos para os processos
