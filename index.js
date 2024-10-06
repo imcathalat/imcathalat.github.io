@@ -60,7 +60,7 @@ document.getElementById('generateBtn').addEventListener('click', function () {
 
 document.getElementById('addManualBtn').addEventListener('click', function() {
   tabelaRR.innerHTML = '';
-  informacaoProcessos.style.display = 'none'
+  document.querySelector('.div-table').style.display = 'none';
   let quantProcessos = document.getElementById('inputNumber').value;
   if (quantProcessos > 0) {
       // Adiciona os campos para os processos
@@ -116,7 +116,7 @@ document.getElementById('submitProcesses').addEventListener('click', function() 
       prioridade.push(Number(prioridadeValue));
       chegada.push(Number(chegadaValue));
   }
-  
+
   quantum = Number(document.getElementById('quantumP').value);
   document.getElementById('quantum').textContent = quantum;
 
