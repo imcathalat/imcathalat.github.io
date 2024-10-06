@@ -11,6 +11,16 @@ class Processo {
 
 // Função para gerar números aleatórios
 let surto = [], prioridade = [], chegada = [], quantum, media;
+const container = document.getElementById('dynamicFormContainer');
+const tabelaRR = document.getElementById('tabelaRR');
+const timelineSection = document.querySelector('.timeline');
+const informacaoProcessos = document.querySelector('.div-table');
+let processos = []
+
+function instanciaProcesso(numProcesso, tempoSurto, prioridade, horaChegada){
+  let p = new Processo(numProcesso, tempoSurto, prioridade, horaChegada);
+  processos.push(p);
+}
 
 
 function calcularMedia(surtos) {
@@ -35,6 +45,8 @@ function generateNumbers(quantProcessos) {
 }
 
 document.getElementById('generateBtn').addEventListener('click', function () {
+  container.innerHTML = '';
+  document.getElementById('submitProcesses').style.display = 'none';
 
   let quantProcessos = document.getElementById('inputNumber').value;
 
@@ -47,11 +59,12 @@ document.getElementById('generateBtn').addEventListener('click', function () {
 });
 
 document.getElementById('addManualBtn').addEventListener('click', function() {
-  // Pega a quantidade de processos
+  tabelaRR.innerHTML = '';
+  informacaoProcessos.style.display = 'none'
   let quantProcessos = document.getElementById('inputNumber').value;
   if (quantProcessos > 0) {
       // Adiciona os campos para os processos
-      const container = document.getElementById('dynamicFormContainer');
+      
       container.innerHTML = ''; // Limpa o conteúdo anterior
 
       container.innerHTML += `
@@ -103,27 +116,29 @@ document.getElementById('submitProcesses').addEventListener('click', function() 
       prioridade.push(Number(prioridadeValue));
       chegada.push(Number(chegadaValue));
   }
-
-  quantum = document.getElementById('quantumP').value;
+  
+  quantum = Number(document.getElementById('quantumP').value);
   document.getElementById('quantum').textContent = quantum;
 
   renderRoundRobinTable(quantProcessos);
   mostraTabela();
+  container.innerHTML = '';
+  document.getElementById('submitProcesses').style.display = 'none';
+
 });
 
 function renderRoundRobinTable(quantProcessos) {
-  const tabelaRR = document.getElementById('tabelaRR');
   tabelaRR.innerHTML = '';
-  let processos = []
 
   for (let i = 0; i < quantProcessos; i++) {
     const rowRR = renderRows((i + 1), surto[i], prioridade[i], chegada[i]);
     tabelaRR.appendChild(rowRR);
-    let p = new Processo((i + 1), surto[i], prioridade[i], chegada[i]);
-    processos.push(p);
+    instanciaProcesso((i + 1), surto[i], prioridade[i], chegada[i]);
   }
   roundRobin(processos);
 }
+
+
 
 function renderRows(numProcesso, surtoP, prioridadeP, chegadaP) {
   const row = document.createElement('tr');
@@ -180,7 +195,7 @@ function adicionarValor(listaExecucaoProcessos, processo, passo) {
 }
 
 function roundRobin(processos) {
-  let PassoComAnterior = 0;
+  let passoComAnterior = 0;
   let somatorioTemposSurto = 0;
   somatorioTemposSurto = somaTempoSurto(processos);
   let processosOrdenados = [];
@@ -201,15 +216,17 @@ function roundRobin(processos) {
       } else if (tempoSurtoRestante < 0) {
         tempoSurtoRestante = 0;
         somatorioTemposSurto -= processosOrdenados[i].surtoP;
-        PassoComAnterior += processosOrdenados[i].surtoP
-        adicionarValor(listaExecucaoProcessos, processosOrdenados[i], PassoComAnterior);
+        passoComAnterior += processosOrdenados[i].surtoP
+        adicionarValor(listaExecucaoProcessos, processosOrdenados[i], passoComAnterior);
         processosOrdenados[i].surtoP = 0;
       } else {
         somatorioTemposSurto -= quantum;
         processosOrdenados[i].surtoP -= quantum;
-        PassoComAnterior += quantum;
-        adicionarValor(listaExecucaoProcessos, processosOrdenados[i], PassoComAnterior);
+        passoComAnterior += quantum;
+        adicionarValor(listaExecucaoProcessos, processosOrdenados[i], passoComAnterior);
       }
+
+      console.log("rodada " + i + ": " + passoComAnterior)
     }
   }
 
@@ -253,16 +270,11 @@ function renderProcessos(numProcesso, final) {
 }
 
 function mostraTimeline() {
-  const timelineSection = document.querySelector('.timeline');
   timelineSection.style.display = 'block';
 }
 
 
-
-
-
-
-
+// ANIMAÇÃO
 (function () {
   // VARIABLES
   const timeline = document.querySelector(".timeline ol"),
