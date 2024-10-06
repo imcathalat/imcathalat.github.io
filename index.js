@@ -46,6 +46,71 @@ document.getElementById('generateBtn').addEventListener('click', function () {
   }
 });
 
+document.getElementById('addManualBtn').addEventListener('click', function() {
+  // Pega a quantidade de processos
+  let quantProcessos = document.getElementById('inputNumber').value;
+  if (quantProcessos > 0) {
+      // Adiciona os campos para os processos
+      const container = document.getElementById('dynamicFormContainer');
+      container.innerHTML = ''; // Limpa o conteúdo anterior
+
+      container.innerHTML += `
+          <div class="row mt-2">
+            <div class="col-md-2">
+              <p>Quantum: </p>
+            </div>
+            <div class="col-md-4">
+              <input type="number" class="form-control" id="quantumP" required>
+            </div>
+          </div>`;
+      for (let i = 0; i < quantProcessos; i++) {
+          container.innerHTML += `
+            <div class="row mt-2">
+              <h5 class="mt-2">Processo ${i + 1}</h5>
+              <div class="col-md-4">
+                <label for="surto${i}" class="form-label">Tempo de Surto:</label>
+                <input type="number" class="form-control" id="surto${i}" required>
+              </div>
+              <div class="col-md-4">
+                <label for="prioridade${i}" class="form-label">Prioridade:</label>
+                <input type="number" class="form-control" id="prioridade${i}" required>
+              </div>
+              <div class="col-md-4 ">
+                <label for="chegada${i}" class="form-label">Tempo de Chegada:</label>
+                <input type="number" class="form-control" id="chegada${i}" required>
+              </div>
+            </div>
+          `;
+      }
+      // Exibe o botão de submeter processos
+      document.getElementById('submitProcesses').style.display = 'block';
+  }
+});
+
+document.getElementById('submitProcesses').addEventListener('click', function() {
+  let quantProcessos = document.getElementById('inputNumber').value;
+  surto = [];
+  prioridade = [];
+  chegada = [];
+
+  for (let i = 0; i < quantProcessos; i++) {
+      const surtoValue = document.getElementById(`surto${i}`).value;
+      const prioridadeValue = document.getElementById(`prioridade${i}`).value;
+      const chegadaValue = document.getElementById(`chegada${i}`).value;
+
+      // Adiciona os valores ao array
+      surto.push(Number(surtoValue));
+      prioridade.push(Number(prioridadeValue));
+      chegada.push(Number(chegadaValue));
+  }
+
+  quantum = document.getElementById('quantumP').value;
+  document.getElementById('quantum').textContent = quantum;
+
+  renderRoundRobinTable(quantProcessos);
+  mostraTabela();
+});
+
 function renderRoundRobinTable(quantProcessos) {
   const tabelaRR = document.getElementById('tabelaRR');
   tabelaRR.innerHTML = '';
