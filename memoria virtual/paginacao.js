@@ -280,6 +280,13 @@ function exibirIdsEmbaralhados() {
   const displayContainer = document.getElementById('arrayDisplay');
   displayContainer.innerHTML = '';
 
+  const titulo = document.createElement('h4');
+  titulo.textContent = 'Ordem das Chamadas de Sistema';
+  titulo.style.textAlign = 'center';
+  titulo.style.color = 'white'; // Centraliza o título
+  titulo.style.display = 'block'; 
+  titulo.style.marginBottom = '15px'; // Adiciona espaço abaixo do título
+  displayContainer.appendChild(titulo);
 
   idsEmbaralhados.forEach(id => {
       const quadrado = document.createElement('div');

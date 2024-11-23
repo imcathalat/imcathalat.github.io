@@ -28,10 +28,28 @@ h4 {
 }
 
 #arrayDisplay {
-    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap; /* Permite quebrar linhas */
+    justify-content: center; /* Centraliza os itens horizontalmente */
+    gap: 10px; /* Espaçamento entre os quadrados */
+    max-width: 80%; /* Define um limite de largura do container */
+    margin: 0 auto; /* Centraliza o container na página */
 }
 
-.quadrado {
+#arrayDisplay .quadrado {
+    width: 40px;
+    height: 40px;
+    background-color: #F45B69;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* .quadrado {
     width: 40px;
     height: 40px;
     margin: 5px;
@@ -44,7 +62,7 @@ h4 {
     font-size: 16px;
     font-weight: bold;
     text-align: center;
-}
+} */
 
 #fifoTable td {
     height: 50px;
