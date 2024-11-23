@@ -1,5 +1,13 @@
 class CallSystem {
-    constructor(paginaId) {
-      this.paginaId = paginaId;
+    constructor(ids) {
+        this.ids = ids; 
     }
-  }
+
+    nextId() {
+        return this.ids.shift(); 
+    }
+
+    hasNext() {
+        return this.ids.length > 0; 
+    }
+}

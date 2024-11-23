@@ -110,8 +110,6 @@ function renderDiscoTable(processos){
   const tabelaDisco = document.getElementById('discoTable');
   tabelaDisco.innerHTML = '';
 
-  instanciaDisco(processos)
-
   disco.forEach(pagina =>{
     const row = document.createElement('tr');
     row.id = `${pagina.paginaId}`;
@@ -121,6 +119,15 @@ function renderDiscoTable(processos){
       `;
       tabelaDisco.appendChild(row);
   })
+}
+
+function resetarMemoria() {
+  const tabelaFIFO = document.getElementById('fifoTable');
+  const rows = tabelaFIFO.querySelectorAll('tr');
+  rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      cells.forEach(cell => cell.textContent = '-');
+  });
 }
 
 function instanciaDisco(processos){
@@ -136,12 +143,15 @@ document.getElementById('generateBtn').addEventListener('click', function () {
   processos = [];
   disco = [];
   limparTabelas();
+
   tabelaRR.innerHTML = ''; 
   document.getElementById('discoTable').innerHTML = ''; 
   tabelas.style.display = 'none';
   container.innerHTML = '';
   uniquePageId = 1;
   document.getElementById('submitProcesses').style.display = 'none';
+
+  resetarMemoria();
 
 
   let quantProcessos = document.getElementById('inputNumber').value;
@@ -151,6 +161,7 @@ document.getElementById('generateBtn').addEventListener('click', function () {
   if (quantProcessos > 0) {
     qntdPaginas = generateNumbers(quantProcessos, tamPagina);
     renderRoundRobinTable(quantProcessos, qntdPaginas);
+    instanciaDisco(processos)
     renderDiscoTable(processos);
     
   }
@@ -166,6 +177,9 @@ document.getElementById('addManualBtn').addEventListener('click', function () {
   tabelaRR.innerHTML = ''; // Limpa a tabela de processos
   document.getElementById('discoTable').innerHTML = ''; 
   let quantProcessos = document.getElementById('inputNumber').value;
+
+  resetarMemoria();
+
   if (quantProcessos > 0) {
     // Adiciona os campos para os processos
 
@@ -210,6 +224,7 @@ document.getElementById('submitProcesses').addEventListener('click', function ()
 
   if (quantProcessos > 0) {
     renderRoundRobinTable(quantProcessos, qntdPaginas);
+    instanciaDisco(processos)
     renderDiscoTable(processos);
     
   }
@@ -222,6 +237,29 @@ document.getElementById('submitProcesses').addEventListener('click', function ()
 
 });
 
+document.getElementById('trocaBtn').addEventListener('click', function () {
+  if (callSystem.hasNext()) {
+      const id = callSystem.nextId();
+
+      // Atualiza a tabela FIFO
+      const tabelaFIFO = document.getElementById('fifoTable');
+      atualizarTabelaFIFO(tabelaFIFO, id);
+
+      const index = disco.findIndex(pagina => pagina.paginaId === id);
+
+      if (index !== -1) {
+        // Remove o objeto do array `disco`
+        disco.splice(index, 1);
+
+        // Re-renderiza a tabela do disco
+        renderDiscoTable();
+    }
+  } else {
+      alert('Todas as páginas já foram transferidas para a memória.');
+  }
+});
+
+
 function embaralharArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -230,10 +268,14 @@ function embaralharArray(array) {
   return array;
 }
 
+let callSystem;
+
 function exibirIdsEmbaralhados() {
   const idsPaginas = processos.flatMap(processo => processo.paginasP.map(pagina => pagina.id));
 
   const idsEmbaralhados = embaralharArray(idsPaginas);
+
+  callSystem = new CallSystem(idsEmbaralhados);
 
   const displayContainer = document.getElementById('arrayDisplay');
   displayContainer.innerHTML = '';
@@ -246,6 +288,29 @@ function exibirIdsEmbaralhados() {
       displayContainer.appendChild(quadrado);
   });
 }
+
+function atualizarTabelaFIFO(tabelaFIFO, id) {
+  const rows = tabelaFIFO.querySelectorAll('tr');
+
+  // Move todos os valores para cima
+  for (let i = 0; i < rows.length - 1; i++) {
+      rows[i].firstChild.textContent = rows[i + 1].firstChild.textContent;
+  }
+
+  // Adiciona o novo valor na última posição
+  rows[rows.length - 1].firstChild.textContent = id || '-';
+}
+
+function removerPaginaDisco(tabelaDisco, id) {
+  const row = tabelaDisco.querySelector(`tr#${id}`);
+  if (row) {
+      row.remove();
+  }
+}
+
+
+
+
 
 
 
