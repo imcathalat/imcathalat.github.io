@@ -1,3 +1,11 @@
+const headerPath = '../header.html';
+
+fetch(headerPath)
+  .then(response => response.text())
+  .then(data => document.getElementById('header').innerHTML = data)
+  .catch(error => console.error('Erro ao carregar o header:', error));
+
+  
 class Processo {
 
   constructor(numProcesso, surtoP, prioridadeP, chegadaP) {
