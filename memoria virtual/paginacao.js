@@ -9,11 +9,16 @@ class Processo {
 
   constructor(numProcesso, tamanhoP, qntdPaginasProcesso, paginasP) {
     this.numProcesso = numProcesso;
-    this.qntdPaginasProcesso = qntdPaginasProcesso;
     this.tamanhoP = tamanhoP;
+    this.qntdPaginasProcesso = qntdPaginasProcesso;
     this.paginasP = paginasP
   }
 }
+
+const inputNumber = document.getElementById('inputNumber');
+const inputPages = document.getElementById('inputPages');
+const generateBtn = document.getElementById('generateBtn');
+const addManualBtn = document.getElementById('addManualBtn');
 
 // Função para gerar números aleatórios
 let tamanho = [], paginas = [];
@@ -23,23 +28,6 @@ const timelineSection = document.querySelector('.timeline');
 const informacaoProcessos = document.querySelector('.div-table');
 let processos = []
 let uniquePageId = 1;
-
-function instanciaProcesso(numProcesso, tamanho, tamPagina, qntdPaginasProcesso) {
-  const paginas = [];
-
-  for (let i = 0; i < qntdPaginasProcesso; i++) {
-    paginas.push(new Pagina(uniquePageId));
-    uniquePageId++;
-  }
-
-  let p = new Processo(numProcesso, tamanho, tamPagina, qntdPaginasProcesso, paginas);
-  processos.push(p);
-}
-
-const inputNumber = document.getElementById('inputNumber');
-const inputPages = document.getElementById('inputPages');
-const generateBtn = document.getElementById('generateBtn');
-const addManualBtn = document.getElementById('addManualBtn');
 
 function toggleButtonState() {
   // Verifica se ambos os campos têm um valor válido (não vazio e maior que zero)
@@ -52,22 +40,65 @@ function toggleButtonState() {
   addManualBtn.disabled = !shouldEnableButtons;
 }
 
-// Adiciona o evento de input para verificar mudanças em ambos os campos
 inputNumber.addEventListener('input', toggleButtonState);
 inputPages.addEventListener('input', toggleButtonState);
+
+function instanciaProcesso(numProcesso, tamanhoP, qntdPaginasProcesso) {
+  const paginas = [];
+
+  for (let i = 0; i < qntdPaginasProcesso; i++) {
+    paginas.push(new Pagina(uniquePageId));
+    uniquePageId++;
+  }
+
+  let p = new Processo(numProcesso, tamanhoP, qntdPaginasProcesso, paginas);
+  processos.push(p);
+}
 
 
 function generateNumbers(quantProcessos, tamPagina) {
 
-  tamanho = [];
   qntdPaginas = [];
 
   for (let i = 0; i < quantProcessos; i++) {
-    tamanho.push(Math.floor(Math.random() * 50) + 5);
+    tamanho.push(Math.floor(Math.random() * 50) + 2);
+  }
+
+  for (let i = 0; i < quantProcessos; i++) {
     qntdPaginas.push(Math.ceil(tamanho[i] / tamPagina));
   }
 
   return qntdPaginas;
+}
+
+function renderRoundRobinTable(quantProcessos, qntdPaginas) {
+  tabelaRR.innerHTML = '';
+
+  for (let i = 0; i < quantProcessos; i++) {
+    instanciaProcesso((i + 1), tamanho[i], qntdPaginas[i]);
+  }
+
+  processos.forEach(processo => {
+    console.log('Processo:', processo.numProcesso, 'Tamanho:', processo.tamanhoP, 'Páginas:', processo.paginasP);
+  });
+  
+
+  processos.forEach(processo =>{
+    const ProcessosRow = renderRows(processo.numProcesso, processo.tamanhoP, processo.qntdPaginasProcesso);
+    tabelaRR.appendChild(ProcessosRow);
+
+  })
+}
+
+function renderRows(numProcesso, tamanhoP, qntdPaginas) {
+  const row = document.createElement('tr');
+  row.innerHTML = `
+        <td>P${numProcesso}</td>
+        <td>${tamanhoP}</td>
+        <td>${qntdPaginas}</td>
+    `;
+
+  return row;
 }
 
 function renderDiscoTable(processos){
@@ -77,17 +108,14 @@ function renderDiscoTable(processos){
   processos.forEach(processo =>{
     processo.paginasP.forEach(pagina =>{
       const row = document.createElement('tr');
-      row.id = `${pagina}`;
+      row.id = `${pagina.id}`;
       row.innerHTML = `
-        <td>${pagina}</td>
-        <td>Processo ${processo.numProcesso}</td>
+        <td>${pagina.id}</td>
+        <td>P${processo.numProcesso}</td>
       `;
       tabelaDisco.appendChild(row);
     })
-
   })
-
-
 }
 
 document.getElementById('generateBtn').addEventListener('click', function () {
@@ -102,7 +130,7 @@ document.getElementById('generateBtn').addEventListener('click', function () {
 
   if (quantProcessos > 0) {
     qntdPaginas = generateNumbers(quantProcessos, tamPagina);
-    renderRoundRobinTable(quantProcessos, tamPagina, qntdPaginas);
+    renderRoundRobinTable(quantProcessos, qntdPaginas);
     renderDiscoTable(processos);
     mostraTabela()
   }
@@ -157,16 +185,7 @@ document.getElementById('submitProcesses').addEventListener('click', function ()
 
 });
 
-function renderRoundRobinTable(quantProcessos, tamPagina, qntdPaginas) {
-  tabelaRR.innerHTML = '';
 
-  for (let i = 0; i < quantProcessos; i++) {
-    const rowRR = renderRows((i + 1), tamanho[i], qntdPaginas[i]);
-    tabelaRR.appendChild(rowRR);
-
-    instanciaProcesso((i + 1), tamanho[i], tamPagina, qntdPaginas[i]);
-  }
-}
 
 function renderFIFOTable(quantProcessos, tamPagina) {
   const tabelaFIFO = document.getElementById('tabelaFIFO');
@@ -193,18 +212,6 @@ function renderFIFOTable(quantProcessos, tamPagina) {
 
 
 
-
-
-
-function renderRows(numProcesso, tamanhoP) {
-  const row = document.createElement('tr');
-  row.innerHTML = `
-        <td>P${numProcesso}</td>
-         <td>${tamanhoP}</td>
-    `;
-
-  return row;
-}
 
 function mostraTabela() {
   const tabelaProcessos = document.getElementById('t1');

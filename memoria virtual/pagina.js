@@ -1,5 +1,5 @@
 class Pagina {
-    constructor(id) {
+    constructor(id, tamanho) {
       this.id = id;
     }
   }
