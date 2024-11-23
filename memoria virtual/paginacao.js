@@ -170,7 +170,7 @@ document.getElementById('addManualBtn').addEventListener('click', function () {
             `;
     }
     // Exibe o botão de submeter processos
-    document.getElementById('submitProcesses').style.display = 'block';
+    document.getElementById('submitProcesses').style.display = 'flex';
   }
 });
 
