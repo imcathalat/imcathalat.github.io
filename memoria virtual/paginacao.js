@@ -1,9 +1,4 @@
-const headerPath = '../header.html';
 
-fetch(headerPath)
-  .then(response => response.text())
-  .then(data => document.getElementById('header').innerHTML = data)
-  .catch(error => console.error('Erro ao carregar o header:', error));
 
 class Processo {
 
@@ -19,6 +14,8 @@ const inputNumber = document.getElementById('inputNumber');
 const inputPages = document.getElementById('inputPages');
 const generateBtn = document.getElementById('generateBtn');
 const addManualBtn = document.getElementById('addManualBtn');
+const tabelas = document.getElementById('tabelas');
+const tabelaDisco = document.getElementById('discoTable');
 
 // Função para gerar números aleatórios
 let tamanho = [], paginas = [];
@@ -28,6 +25,11 @@ const timelineSection = document.querySelector('.timeline');
 const informacaoProcessos = document.querySelector('.div-table');
 let processos = []
 let uniquePageId = 1;
+
+function limparTabelas() {
+  tabelaRR.innerHTML = ''; // Limpa a tabela de processos
+  tabelaDisco.innerHTML = ''; // Limpa a tabela do disco
+}
 
 function toggleButtonState() {
   // Verifica se ambos os campos têm um valor válido (não vazio e maior que zero)
@@ -42,6 +44,8 @@ function toggleButtonState() {
 
 inputNumber.addEventListener('input', toggleButtonState);
 inputPages.addEventListener('input', toggleButtonState);
+
+
 
 function instanciaProcesso(numProcesso, tamanhoP, qntdPaginasProcesso) {
   const paginas = [];
@@ -119,6 +123,11 @@ function renderDiscoTable(processos){
 }
 
 document.getElementById('generateBtn').addEventListener('click', function () {
+  processos = [];
+  limparTabelas();
+  tabelaRR.innerHTML = ''; 
+  document.getElementById('discoTable').innerHTML = ''; 
+  tabelas.style.display = 'none';
   container.innerHTML = '';
   uniquePageId = 1;
   document.getElementById('submitProcesses').style.display = 'none';
@@ -132,14 +141,17 @@ document.getElementById('generateBtn').addEventListener('click', function () {
     qntdPaginas = generateNumbers(quantProcessos, tamPagina);
     renderRoundRobinTable(quantProcessos, qntdPaginas);
     renderDiscoTable(processos);
-    mostraTabela()
+    
   }
+  tabelas.style.display = 'flex';
 });
 
 document.getElementById('addManualBtn').addEventListener('click', function () {
-  tabelaRR.innerHTML = '';
-  document.querySelector('.div-table').style.display = 'none';
-  document.querySelector('.timeline').style.display = 'none';
+  processos = [];
+  limparTabelas();
+  tabelas.style.display = 'none';
+  tabelaRR.innerHTML = ''; // Limpa a tabela de processos
+  document.getElementById('discoTable').innerHTML = ''; 
   let quantProcessos = document.getElementById('inputNumber').value;
   if (quantProcessos > 0) {
     // Adiciona os campos para os processos
@@ -179,7 +191,6 @@ document.getElementById('submitProcesses').addEventListener('click', function ()
   renderRoundRobinTable(quantProcessos, tamPagina, qntdPaginas);
   renderDiscoTable(processos);
   // inicializarMemoriaDisco(quantProcessos, tamPagina);
-  mostraTabela()
   container.innerHTML = '';
   document.getElementById('submitProcesses').style.display = 'none';
 
