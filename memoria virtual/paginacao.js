@@ -175,9 +175,13 @@ document.getElementById('addManualBtn').addEventListener('click', function () {
 });
 
 document.getElementById('submitProcesses').addEventListener('click', function () {
+  
+  limparTabelas();
   let quantProcessos = document.getElementById('inputNumber').value;
+  let tamPagina = document.getElementById('inputPages').value;
   tamanho = [];
   let qntdPaginas = [];
+
 
   for (let i = 0; i < quantProcessos; i++) {
     const tamanhoValue = document.getElementById(`tamanho${i}`).value;
@@ -187,12 +191,20 @@ document.getElementById('submitProcesses').addEventListener('click', function ()
     qntdPaginas.push(Math.ceil(tamanho[i] / tamPagina));
   }
 
+  for (let i = 0; i < quantProcessos; i++) {
+    qntdPaginas.push(Math.ceil(tamanho[i] / tamPagina));
+  }
 
-  renderRoundRobinTable(quantProcessos, tamPagina, qntdPaginas);
-  renderDiscoTable(processos);
+  if (quantProcessos > 0) {
+    renderRoundRobinTable(quantProcessos, qntdPaginas);
+    renderDiscoTable(processos);
+    
+  }
+
   // inicializarMemoriaDisco(quantProcessos, tamPagina);
   container.innerHTML = '';
   document.getElementById('submitProcesses').style.display = 'none';
+  tabelas.style.display = 'flex';
 
 });
 
