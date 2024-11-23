@@ -26,3 +26,30 @@ h4 {
     padding: 10px;
     border-radius: 5px;
 }
+
+#arrayDisplay {
+    margin-top: 20px;
+}
+
+.quadrado {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    background-color: #F45B69;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#fifoTable td {
+    height: 50px;
+    vertical-align: middle;
+    font-size: 18px;
+    font-weight: bold;
+}
+

@@ -23,7 +23,8 @@ const container = document.getElementById('dynamicFormContainer');
 const tabelaRR = document.getElementById('tabelaRR');
 const timelineSection = document.querySelector('.timeline');
 const informacaoProcessos = document.querySelector('.div-table');
-let processos = []
+let processos = [];
+let disco = [];
 let uniquePageId = 1;
 
 function limparTabelas() {
@@ -109,21 +110,31 @@ function renderDiscoTable(processos){
   const tabelaDisco = document.getElementById('discoTable');
   tabelaDisco.innerHTML = '';
 
-  processos.forEach(processo =>{
-    processo.paginasP.forEach(pagina =>{
-      const row = document.createElement('tr');
-      row.id = `${pagina.id}`;
+  instanciaDisco(processos)
+
+  disco.forEach(pagina =>{
+    const row = document.createElement('tr');
+    row.id = `${pagina.paginaId}`;
       row.innerHTML = `
-        <td>${pagina.id}</td>
-        <td>P${processo.numProcesso}</td>
+        <td>${pagina.paginaId}</td>
+        <td>P${pagina.numProcesso}</td>
       `;
       tabelaDisco.appendChild(row);
+  })
+}
+
+function instanciaDisco(processos){
+
+  processos.forEach(processo =>{
+    processo.paginasP.forEach(pagina =>{
+      disco.push(new Disco(pagina.id, processo.numProcesso))
     })
   })
 }
 
 document.getElementById('generateBtn').addEventListener('click', function () {
   processos = [];
+  disco = [];
   limparTabelas();
   tabelaRR.innerHTML = ''; 
   document.getElementById('discoTable').innerHTML = ''; 
@@ -143,11 +154,13 @@ document.getElementById('generateBtn').addEventListener('click', function () {
     renderDiscoTable(processos);
     
   }
+  exibirIdsEmbaralhados();
   tabelas.style.display = 'flex';
 });
 
 document.getElementById('addManualBtn').addEventListener('click', function () {
   processos = [];
+  disco = [];
   limparTabelas();
   tabelas.style.display = 'none';
   tabelaRR.innerHTML = ''; // Limpa a tabela de processos
@@ -205,8 +218,36 @@ document.getElementById('submitProcesses').addEventListener('click', function ()
   container.innerHTML = '';
   document.getElementById('submitProcesses').style.display = 'none';
   tabelas.style.display = 'flex';
+  exibirIdsEmbaralhados();
 
 });
+
+function embaralharArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function exibirIdsEmbaralhados() {
+  const idsPaginas = processos.flatMap(processo => processo.paginasP.map(pagina => pagina.id));
+
+  const idsEmbaralhados = embaralharArray(idsPaginas);
+
+  const displayContainer = document.getElementById('arrayDisplay');
+  displayContainer.innerHTML = '';
+
+
+  idsEmbaralhados.forEach(id => {
+      const quadrado = document.createElement('div');
+      quadrado.className = 'quadrado';
+      quadrado.textContent = id; 
+      displayContainer.appendChild(quadrado);
+  });
+}
+
+
 
 
 
